@@ -49,7 +49,7 @@ public class UserService {
         user.setRole("CLIENT");
         userRepository.save(user);
 
-        // Verificar que el usuario tiene un ID asignado
+        // Verificar que el ID del usuario fue generado
         if (user.getId() == 0) {
             throw new IllegalStateException("No se generó un ID para el usuario");
         }
@@ -61,8 +61,8 @@ public class UserService {
         client.setEmail(email);
         client.setPhone(phone);
         client.setAddress(address);
-        client.setUserId(user.getId());
-        clientRepository.save(client);
+        client.setUserId(user.getId()); // Asignar el ID del usuario al cliente
+        clientRepository.save(client); // Guardar el cliente
     }
 
 
@@ -80,7 +80,7 @@ public class UserService {
         user.setRole("DEALER");
         userRepository.save(user);
 
-        // Verificar que el usuario tiene un ID asignado
+        // Verificar que el ID del usuario fue generado correctamente
         if (user.getId() == 0) {
             throw new IllegalStateException("No se generó un ID para el usuario");
         }

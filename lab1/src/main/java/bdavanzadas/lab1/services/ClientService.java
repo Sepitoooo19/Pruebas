@@ -24,7 +24,7 @@ public class ClientService {
         client.setRut(rut);
         client.setEmail(email);
         client.setPhone(phone);
-        client.setAddress(address); // Asegúrate de que este campo no sea nulo
+        client.setAddress(address);
         client.setUserId(user.getId());
         clientRepository.save(client);
     }
