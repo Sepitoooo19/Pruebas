@@ -16,28 +16,5 @@ public class ClientService {
         this.clientRepository = clientRepository;
     }
 
-    @Transactional(readOnly = true)
-    public List<ClientEntity> getAllClients() {
-        return clientRepository.findAll();
-    }
 
-    @Transactional
-    public void addClient(ClientEntity client) {
-        clientRepository.save(client);
-    }
-
-    @Transactional
-    public void updateClient(ClientEntity client) {
-        clientRepository.update(client);
-    }
-
-    @Transactional
-    public void deleteClient(int id) {
-        clientRepository.delete(id);
-    }
-
-    @Transactional(readOnly = true)
-    public ClientEntity getClientById(int id) {
-        return clientRepository.findById(id);
-    }
 }

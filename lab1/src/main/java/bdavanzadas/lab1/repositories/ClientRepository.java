@@ -7,12 +7,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ClientRepository {
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     public void save(ClientEntity client) {
-        String sql = "INSERT INTO clients (user_id, name, rut, email, phone, address) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql, client.getUserId(), client.getName(), client.getRut(), client.getEmail(), client.getPhone(), client.getAddress());
+        String sql = "INSERT INTO clients (name, rut, email, phone, adress,user_id) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, client.getName(), client.getRut(), client.getEmail(), client.getUserId());
     }
 }

@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Autowired
     private ClientRepository clientRepository;
@@ -22,33 +24,54 @@ public class UserService {
     @Autowired
     private DealerRepository dealerRepository;
 
-    @Autowired
-    private PasswordEncoder encoder;
 
-    public void registerClient(String username, String password, ClientEntity client) {
-        // 1. Crear el usuario
+
+    public void registerAdmin(String username, String password) {
         String encodedPassword = encoder.encode(password);
-        UserEntity user = new UserEntity(0, username, encodedPassword, "CLIENT", null, null);
+        UserEntity user = new UserEntity();
+        user.setUsername(username);
+        user.setPassword(encodedPassword);
+        user.setRole("ADMIN");
+        userRepository.save(user);
+    }
+
+    public void registerClient(String username, String password, String name, String rut, String email) {
+        String encodedPassword = encoder.encode(password);
+        UserEntity user = new UserEntity();
+        user.setUsername(username);
+        user.setPassword(encodedPassword);
+        user.setRole("CLIENT");
         userRepository.save(user);
 
-        // 2. Asociar el usuario con el cliente
+        ClientEntity client = new ClientEntity();
+        client.setName(name);
+        client.setRut(rut);
+        client.setEmail(email);
         client.setUserId(user.getId());
         clientRepository.save(client);
     }
 
-    public void registerDealer(String username, String password, DealerEntity dealer) {
-        // 1. Crear el usuario
+    public void registerDealer(String username, String password, String name, String rut, String email) {
         String encodedPassword = encoder.encode(password);
-        UserEntity user = new UserEntity(0, username, encodedPassword, "DEALER", null, null);
+        UserEntity user = new UserEntity();
+        user.setUsername(username);
+        user.setPassword(encodedPassword);
+        user.setRole("DEALER");
         userRepository.save(user);
 
-        // 2. Asociar el usuario con el dealer
+        DealerEntity dealer = new DealerEntity();
+        dealer.setName(name);
+        dealer.setRut(rut);
+        dealer.setEmail(email);
         dealer.setUserId(user.getId());
         dealerRepository.save(dealer);
     }
 
-    public boolean validateCredentials(String username, String password) {
+    public UserEntity validateCredentials(String username, String password) {
         UserEntity user = userRepository.findByUsername(username);
-        return user != null && encoder.matches(password, user.getPassword());
+        if (user != null && encoder.matches(password, user.getPassword())) {
+            return user;
+        }
+        return null;
     }
 }

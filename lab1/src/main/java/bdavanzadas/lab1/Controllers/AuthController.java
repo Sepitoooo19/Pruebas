@@ -6,41 +6,43 @@ import bdavanzadas.lab1.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import bdavanzadas.lab1.entities.UserEntity;
+import bdavanzadas.lab1.Security.JwtUtil;
+
+import org.springframework.http.HttpStatus;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
         String username = (String) body.get("username");
         String password = (String) body.get("password");
         String role = (String) body.get("role");
 
-        if ("CLIENT".equals(role)) {
-            ClientEntity client = new ClientEntity();
-            client.setName((String) body.get("name"));
-            client.setRut((String) body.get("rut"));
-            client.setEmail((String) body.get("email"));
-            // Registrar cliente
-            userService.registerClient(username, password, client);
+        if ("ADMIN".equals(role)) {
+            userService.registerAdmin(username, password);
+        } else if ("CLIENT".equals(role)) {
+            String name = (String) body.get("name");
+            String rut = (String) body.get("rut");
+            String email = (String) body.get("email");
+            userService.registerClient(username, password, name, rut, email);
         } else if ("DEALER".equals(role)) {
-            DealerEntity dealer = new DealerEntity();
-            dealer.setName((String) body.get("name"));
-            dealer.setRut((String) body.get("rut"));
-            dealer.setEmail((String) body.get("email"));
-            // Registrar distribuidor
-            userService.registerDealer(username, password, dealer);
-        } else {
-            return ResponseEntity.badRequest().body("Rol no válido");
+            String name = (String) body.get("name");
+            String rut = (String) body.get("rut");
+            String email = (String) body.get("email");
+            userService.registerDealer(username, password, name, rut, email);
         }
 
-        return ResponseEntity.ok("Usuario registrado correctamente");
+        return ResponseEntity.ok("Usuario registrado");
     }
 
     @PostMapping("/login")
@@ -48,12 +50,12 @@ public class AuthController {
         String username = body.get("username");
         String password = body.get("password");
 
-        if (userService.validateCredentials(username, password)) {
-            // Generar un token con el rol del usuario (omitiendo la implementación)
-            String token = "Token"; // Reemplazar con lógica de generación de JWT
+        UserEntity user = userService.validateCredentials(username, password);
+        if (user != null) {
+            String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
             return ResponseEntity.ok(Map.of("token", token));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
         }
-
-        return ResponseEntity.status(401).body("Credenciales inválidas");
     }
 }

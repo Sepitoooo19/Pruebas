@@ -18,23 +18,5 @@ public class DealerService {
         this.dealerRepository = dealerRepository;
     }
 
-    @Transactional(readOnly = true)
-    public List<DealerEntity> getAllDealers() {
-        return dealerRepository.findAll();
-    }
 
-    @Transactional
-    public void saveDealer(DealerEntity dealer) {
-        dealerRepository.save(dealer);
-    }
-
-    @Transactional
-    public void deleteDealer(int id) {
-        dealerRepository.delete(id);
-    }
-
-    @Transactional(readOnly = true)
-    public DealerEntity getDealerById(int id) {
-        return dealerRepository.findById(id);
-    }
 }

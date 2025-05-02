@@ -11,8 +11,7 @@ public class UserEntity {
     private int id;
     private String username;
     private String password;
-    private String role; // Valores: 'USER', 'CLIENT', 'DEALER'
+    private String role; // ADMIN, CLIENT, DEALER
 
-    private ClientEntity client; // Relación opcional
-    private DealerEntity dealer; // Relación opcional
+  
 }

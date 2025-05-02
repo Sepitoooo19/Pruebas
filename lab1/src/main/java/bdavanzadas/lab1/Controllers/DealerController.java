@@ -19,37 +19,5 @@ public class DealerController {
         this.dealerService = dealerService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<DealerEntity>> getAllDealers() {
-        return ResponseEntity.ok(dealerService.getAllDealers());
-    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DealerEntity> getDealerById(@PathVariable int id) {
-        DealerEntity dealer = dealerService.getDealerById(id);
-        if (dealer != null) {
-            return ResponseEntity.ok(dealer);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping
-    public ResponseEntity<Void> addDealer(@RequestBody DealerEntity dealer) {
-        dealerService.saveDealer(dealer);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateDealer(@PathVariable int id, @RequestBody DealerEntity dealer) {
-        dealer.setId(id);
-        dealerService.saveDealer(dealer);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDealer(@PathVariable int id) {
-        dealerService.deleteDealer(id);
-        return ResponseEntity.noContent().build();
-    }
 }
