@@ -35,7 +35,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void registerClient(String username, String password, String name, String rut, String email) {
+    public void registerClient(String username, String password, String name, String rut, String email, String phone, String address) {
+        // Verificar si el username ya existe
+        if (userRepository.findByUsername(username) != null) {
+            throw new IllegalArgumentException("El nombre de usuario ya está en uso: " + username);
+        }
+
+        // Crear el usuario
         String encodedPassword = encoder.encode(password);
         UserEntity user = new UserEntity();
         user.setUsername(username);
@@ -43,15 +49,30 @@ public class UserService {
         user.setRole("CLIENT");
         userRepository.save(user);
 
+        // Verificar que el usuario tiene un ID asignado
+        if (user.getId() == 0) {
+            throw new IllegalStateException("No se generó un ID para el usuario");
+        }
+
+        // Crear el cliente asociado al usuario
         ClientEntity client = new ClientEntity();
         client.setName(name);
         client.setRut(rut);
         client.setEmail(email);
+        client.setPhone(phone);
+        client.setAddress(address);
         client.setUserId(user.getId());
         clientRepository.save(client);
     }
 
-    public void registerDealer(String username, String password, String name, String rut, String email) {
+
+    public void registerDealer(String username, String password, String name, String rut, String email, String phone, String vehicle, String plate) {
+        // Verificar si el username ya existe
+        if (userRepository.findByUsername(username) != null) {
+            throw new IllegalArgumentException("El nombre de usuario ya está en uso: " + username);
+        }
+
+        // Crear y guardar el usuario
         String encodedPassword = encoder.encode(password);
         UserEntity user = new UserEntity();
         user.setUsername(username);
@@ -59,11 +80,21 @@ public class UserService {
         user.setRole("DEALER");
         userRepository.save(user);
 
+        // Verificar que el usuario tiene un ID asignado
+        if (user.getId() == 0) {
+            throw new IllegalStateException("No se generó un ID para el usuario");
+        }
+
+        // Crear y guardar el dealer
         DealerEntity dealer = new DealerEntity();
         dealer.setName(name);
         dealer.setRut(rut);
         dealer.setEmail(email);
-        dealer.setUserId(user.getId());
+        dealer.setPhone(phone);
+        dealer.setVehicle(vehicle);
+        dealer.setPlate(plate);
+        dealer.setUserId(user.getId()); // Relación con el usuario
+
         dealerRepository.save(dealer);
     }
 

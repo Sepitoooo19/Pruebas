@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import bdavanzadas.lab1.entities.UserEntity;
 import bdavanzadas.lab1.Security.JwtUtil;
 
+import bdavanzadas.lab1.services.ClientService;
+
 import org.springframework.http.HttpStatus;
 
 import java.util.Map;
@@ -22,6 +24,11 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private ClientService clientService;
+
+
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Map<String, Object> body) {
         String username = (String) body.get("username");
@@ -34,15 +41,22 @@ public class AuthController {
             String name = (String) body.get("name");
             String rut = (String) body.get("rut");
             String email = (String) body.get("email");
-            userService.registerClient(username, password, name, rut, email);
+            String phone = (String) body.get("phone");
+            String address = (String) body.get("address");
+
+            userService.registerClient(username, password, name, rut, email, phone, address);
         } else if ("DEALER".equals(role)) {
             String name = (String) body.get("name");
             String rut = (String) body.get("rut");
             String email = (String) body.get("email");
-            userService.registerDealer(username, password, name, rut, email);
+            String phone = (String) body.get("phone");
+            String vehicle = (String) body.get("vehicle");
+            String plate = (String) body.get("plate");
+
+            userService.registerDealer(username, password, name, rut, email, phone, vehicle, plate);
         }
 
-        return ResponseEntity.ok("Usuario registrado");
+        return ResponseEntity.ok("Usuario registrado exitosamente");
     }
 
     @PostMapping("/login")
